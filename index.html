@@ -62,48 +62,27 @@
     <div class="manual-setup">
         Приложение не открывается? <a href="YOUR_GUIDE_LINK_HERE">Воспользуйтесь ручной настройкой</a>
     </div>
-
 <script>
-        function decodeAndRedirect(encodedUrl) {
-            const replacements = {
-                '[COLON]': ':',
-                '[SLASH]': '/',
-                '[QUEST]': '?',
-                '[AND]': '&',
-                '[EQ]': '=',
-                '[HASH]': '#',
-                '[AT]': '@'
-            };
+    function openHiddify() {
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const vlessUrl = urlParams.get('config');
             
-            let decodedUrl = encodedUrl;
-            for (const [encoded, original] of Object.entries(replacements)) {
-                decodedUrl = decodedUrl.replaceAll(encoded, original);
+            if (!vlessUrl) {
+                alert('Ошибка: конфигурация не найдена');
+                return;
             }
-            
-            return decodedUrl;
+
+            console.log('Redirecting to:', vlessUrl);
+            window.location.href = `hiddify://import/${vlessUrl}`;
+        } catch (error) {
+            console.error('Ошибка при обработке URL:', error);
+            alert('Произошла ошибка при обработке конфигурации');
         }
+    }
 
-        function openHiddify() {
-            try {
-                const urlParams = new URLSearchParams(window.location.search);
-                const encodedConfig = urlParams.get('config');
-                
-                if (!encodedConfig) {
-                    alert('Ошибка: конфигурация не найдена');
-                    return;
-                }
-
-                const decodedUrl = decodeAndRedirect(encodedConfig);
-                console.log('Decoded URL:', decodedUrl);
-                window.location.href = `hiddify://import/${decodedUrl}`;
-            } catch (error) {
-                console.error('Ошибка при обработке URL:', error);
-                alert('Произошла ошибка при обработке конфигурации');
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', openHiddify);
-    </script>
+    document.addEventListener('DOMContentLoaded', openHiddify);
+</script>
 
 </body>
 </html>
