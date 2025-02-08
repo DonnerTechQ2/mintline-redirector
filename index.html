@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiddify Redirect (mintline)</title>
+    <style>
+        body {
+            background-color: white;
+            color: black;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .message {
+            margin-bottom: 30px;
+            font-size: 18px;
+        }
+
+        .retry-button {
+            background-color: #008771;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 40px;
+            transition: opacity 0.2s;
+        }
+
+        .retry-button:hover {
+            opacity: 0.9;
+        }
+
+        .manual-setup {
+            position: fixed;
+            bottom: 30px;
+            font-size: 14px;
+        }
+
+        .manual-setup a {
+            color: #008771;
+            text-decoration: none;
+        }
+
+        .manual-setup a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="message">Сейчас должно открыться приложение Hiddify</div>
+    <button class="retry-button" onclick="openHiddify()">Повторить попытку</button>
+    <div class="manual-setup">
+        Приложение не открывается? <a href="YOUR_GUIDE_LINK_HERE">Воспользуйтесь ручной настройкой</a>
+    </div>
+
+    <script>
+        function encodeVlessUrl(vlessUrl) {
+            let encoded = encodeURIComponent(vlessUrl);
+            return encoded.replace(/%3A/g, ':')
+                         .replace(/%2F/g, '/')
+                         .replace(/%40/g, '@')
+                         .replace(/%23/g, '#');
+        }
+
+        function extractName(vlessUrl) {
+            const hashIndex = vlessUrl.lastIndexOf('#');
+            return hashIndex !== -1 ? vlessUrl.substring(hashIndex + 1) : 'default_name';
+        }
+
+        function openHiddify() {
+            // Get the VLESS URL from the current URL's parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const vlessUrl = urlParams.get('config');
+            
+            if (!vlessUrl) {
+                alert('Ошибка: конфигурация не найдена');
+                return;
+            }
+
+            const name = extractName(vlessUrl);
+            const encodedUrl = encodeVlessUrl(vlessUrl);
+            const hiddifyUrl = `hiddify://import/${encodedUrl}#${name}`;
+            
+            // Attempt to open the Hiddify app
+            window.location.href = hiddifyUrl;
+        }
+
+        // Automatically try to open Hiddify when page loads
+        document.addEventListener('DOMContentLoaded', openHiddify);
+    </script>
+</body>
+</html>
