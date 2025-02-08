@@ -63,24 +63,30 @@
         Приложение не открывается? <a href="YOUR_GUIDE_LINK_HERE">Воспользуйтесь ручной настройкой</a>
     </div>
 <script>
-    function openHiddify() {
-        try {
-            const urlParams = new URLSearchParams(window.location.search);
-            const vlessUrl = urlParams.get('config');
-            
-            if (!vlessUrl) {
-                alert('Ошибка: конфигурация не найдена');
-                return;
-            }
-
-            console.log('Redirecting to:', vlessUrl);
-            window.location.href = `hiddify://import/${vlessUrl}#profile-title: Test`;
-        } catch (error) {
-            console.error('Ошибка при обработке URL:', error);
-            alert('Произошла ошибка при обработке конфигурации');
+function openHiddify() {
+    try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const vlessUrl = urlParams.get('config');
+        const profileTitle = urlParams.get('title') || 'Default Profile';
+        
+        if (!vlessUrl) {
+            alert('Ошибка: конфигурация не найдена');
+            return;
         }
+        
+        // Создаем объект URL
+        const importUrl = new URL(`hiddify://import/${vlessUrl}`);
+        
+        // Добавляем пользовательский заголовок
+        importUrl.searchParams.set('Profile-Title', profileTitle);
+        
+        console.log('Redirecting to:', importUrl.href);
+        window.location.href = importUrl.href;
+    } catch (error) {
+        console.error('Ошибка при обработке URL:', error);
+        alert('Произошла ошибка при обработке конфигурации');
     }
-
+}
     document.addEventListener('DOMContentLoaded', openHiddify);
 </script>
 
