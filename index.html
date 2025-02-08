@@ -91,7 +91,7 @@ function openHiddify() {
 
         console.log('Redirecting to:', processedUrl);
         // window.location.href = `hiddify://import/${processedUrl}`;
-        window.open("hiddify://import/${processedUrl}", "_self")
+        window.open(`hiddify://import/${processedUrl}`, "_self")
     } catch (error) {
         console.error('Ошибка при обработке URL:', error);
         alert('Произошла ошибка при обработке конфигурации');
