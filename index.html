@@ -66,7 +66,7 @@
     function openHiddify() {
         try {
             const urlParams = new URLSearchParams(window.location.search);
-            const vlessUrl = urlParams.get('config');
+            const vlessUrl = urlParams.get('key');
             
             if (!vlessUrl) {
                 alert('Ошибка: конфигурация не найдена');
