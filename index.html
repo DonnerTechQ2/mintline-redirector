@@ -63,25 +63,41 @@
         Приложение не открывается? <a href="YOUR_GUIDE_LINK_HERE">Воспользуйтесь ручной настройкой</a>
     </div>
 <script>
-    function openHiddify() {
-        try {
-            const urlParams = new URLSearchParams(window.location.search);
-            const vlessUrl = urlParams.get('config');
-            
-            if (!vlessUrl) {
-                alert('Ошибка: конфигурация не найдена');
-                return;
-            }
-
-            console.log('Redirecting to:', vlessUrl);
-            window.location.href = `hiddify://import/${vlessUrl}`;
-        } catch (error) {
-            console.error('Ошибка при обработке URL:', error);
-            alert('Произошла ошибка при обработке конфигурации');
+function openHiddify() {
+    try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const vlessUrl = urlParams.get('config');
+        
+        if (!vlessUrl) {
+            alert('Ошибка: конфигурация не найдена');
+            return;
         }
-    }
 
-    document.addEventListener('DOMContentLoaded', openHiddify);
+        // Find the position of spx= in the URL
+        const spxIndex = vlessUrl.indexOf('spx=');
+        let processedUrl = vlessUrl;
+
+        if (spxIndex !== -1) {
+            // Split the URL at spx=
+            const beforeSpx = vlessUrl.substring(0, spxIndex + 4); // Include 'spx='
+            const afterSpx = vlessUrl.substring(spxIndex + 4);
+            
+            // Replace forward slash with %2F in the part after spx=
+            const encodedAfterSpx = afterSpx.replace(/\//g, '%2F');
+            
+            // Combine the parts back together
+            processedUrl = beforeSpx + encodedAfterSpx;
+        }
+
+        console.log('Redirecting to:', processedUrl);
+        window.location.href = `hiddify://import/${processedUrl}`;
+    } catch (error) {
+        console.error('Ошибка при обработке URL:', error);
+        alert('Произошла ошибка при обработке конфигурации');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', openHiddify);
 </script>
 
 </body>
