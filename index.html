@@ -82,6 +82,7 @@
         }
 
         const encodedUrl = encodeVlessUrl(vlessUrl);
+        console.log('Encoded URL:', encodedUrl);
         window.location.href = `hiddify://import/${encodedUrl}`;
     }
 
