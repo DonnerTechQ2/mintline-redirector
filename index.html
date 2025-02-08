@@ -90,7 +90,7 @@ function openHiddify() {
         }
 
         console.log('Redirecting to:', processedUrl);
-        window.location.href = `hiddify://import/${processedUrl}`;
+        window.location.href = `hiddify://import/${processedUrl}#MyCustomProfile`;
     } catch (error) {
         console.error('Ошибка при обработке URL:', error);
         alert('Произошла ошибка при обработке конфигурации');
