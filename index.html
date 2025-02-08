@@ -73,20 +73,30 @@ function openHiddify() {
             alert('Ошибка: конфигурация не найдена');
             return;
         }
-        
-        // Создаем объект URL
-        const importUrl = new URL(`hiddify://import/${vlessUrl}`);
-        
-        // Добавляем пользовательский заголовок
-        importUrl.searchParams.set('Profile-Title', profileTitle);
-        
-        console.log('Redirecting to:', importUrl.href);
-        window.location.href = importUrl.href;
+
+        // Создаем объект с заголовками
+        const headers = new Headers();
+        headers.append('Profile-Title', profileTitle);
+
+        // Используем fetch для проверки URL перед редиректом
+        fetch(vlessUrl, {
+            method: 'HEAD',
+            headers: headers
+        })
+        .then(response => {
+            console.log('Redirecting to:', vlessUrl);
+            window.location.href = `hiddify://import/${vlessUrl}`;
+        })
+        .catch(error => {
+            console.error('Ошибка при проверке URL:', error);
+            alert('Произошла ошибка при подготовке конфигурации');
+        });
     } catch (error) {
         console.error('Ошибка при обработке URL:', error);
         alert('Произошла ошибка при обработке конфигурации');
     }
 }
+    
     document.addEventListener('DOMContentLoaded', openHiddify);
 </script>
 
