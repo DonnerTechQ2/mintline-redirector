@@ -65,27 +65,48 @@
 
 <script>
     function encodeVlessUrl(vlessUrl) {
-        return encodeURIComponent(vlessUrl)
+        // Сначала кодируем специальные символы в параметрах URL
+        const [baseUrl, params] = vlessUrl.split('?');
+        if (!params) return vlessUrl;
+
+        // Разделяем параметры и обрабатываем каждый отдельно
+        const paramPairs = params.split('&');
+        const encodedParams = paramPairs.map(param => {
+            const [key, value] = param.split('=');
+            if (!value) return key;
+            // Кодируем только значение параметра
+            const encodedValue = encodeURIComponent(value);
+            return `${key}=${encodedValue}`;
+        });
+
+        // Собираем URL обратно
+        const encodedUrl = `${baseUrl}?${encodedParams.join('&')}`;
+        
+        // Декодируем обратно специальные символы в базовой части URL
+        return encodedUrl
             .replace(/%3A/g, ':')
             .replace(/%2F/g, '/')
             .replace(/%40/g, '@')
-            .replace(/%23/g, '#')
-            .replace(/%3F/g, '?')
-            .replace(/%26/g, '&');
+            .replace(/%23/g, '#');
     }
 
     function openHiddify() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const vlessUrl = urlParams.get('config');
-        
-        if (!vlessUrl) {
-            alert('Ошибка: конфигурация не найдена');
-            return;
-        }
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const vlessUrl = urlParams.get('config');
+            
+            if (!vlessUrl) {
+                alert('Ошибка: конфигурация не найдена');
+                return;
+            }
 
-        const encodedUrl = encodeVlessUrl(vlessUrl);
-        console.log('Encoded URL:', encodedUrl);
-        window.location.href = `hiddify://import/${encodedUrl}`;
+            const encodedUrl = encodeVlessUrl(vlessUrl);
+            console.log('Encoded URL:', encodedUrl);
+            window.location.href = `hiddify://import/${encodedUrl}`;
+        } catch (error) {
+            console.error('Ошибка при обработке URL:', error);
+            alert('Произошла ошибка при обработке конфигурации');
+        }
     }
 
     document.addEventListener('DOMContentLoaded', openHiddify);
