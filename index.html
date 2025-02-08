@@ -63,40 +63,30 @@
         Приложение не открывается? <a href="YOUR_GUIDE_LINK_HERE">Воспользуйтесь ручной настройкой</a>
     </div>
 
-    <script>
-        function encodeVlessUrl(vlessUrl) {
-            let encoded = encodeURIComponent(vlessUrl);
-            return encoded.replace(/%3A/g, ':')
-                         .replace(/%2F/g, '/')
-                         .replace(/%40/g, '@')
-                         .replace(/%23/g, '#');
+<script>
+    function encodeVlessUrl(vlessUrl) {
+        return encodeURIComponent(vlessUrl)
+            .replace(/%3A/g, ':')
+            .replace(/%2F/g, '/')
+            .replace(/%40/g, '@')
+            .replace(/%23/g, '#');
+    }
+
+    function openHiddify() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const vlessUrl = urlParams.get('config');
+        
+        if (!vlessUrl) {
+            alert('Ошибка: конфигурация не найдена');
+            return;
         }
 
-        function extractName(vlessUrl) {
-            const hashIndex = vlessUrl.lastIndexOf('#');
-            return hashIndex !== -1 ? vlessUrl.substring(hashIndex + 1) : 'default_name';
-        }
+        const encodedUrl = encodeVlessUrl(vlessUrl);
+        window.location.href = `hiddify://import/${encodedUrl}`;
+    }
 
-        function openHiddify() {
-            // Get the VLESS URL from the current URL's parameters
-            const urlParams = new URLSearchParams(window.location.search);
-            const vlessUrl = urlParams.get('config');
-            
-            if (!vlessUrl) {
-                alert('Ошибка: конфигурация не найдена');
-                return;
-            }
+    document.addEventListener('DOMContentLoaded', openHiddify);
+</script>
 
-            const name = extractName(vlessUrl);
-            const encodedUrl = encodeVlessUrl(vlessUrl);
-            const hiddifyUrl = `hiddify://import/${encodedUrl}#${name}`;
-            
-            // Attempt to open the Hiddify app
-            window.location.href = hiddifyUrl;
-        }
-
-        // Automatically try to open Hiddify when page loads
-        document.addEventListener('DOMContentLoaded', openHiddify);
-    </script>
 </body>
 </html>
